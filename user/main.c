@@ -9,10 +9,12 @@
 #define TASK_LED_STACK_SIZE configMINIMAL_STACK_SIZE			//任务堆栈大小
 #define TASK_LCD_STACK_SIZE configMINIMAL_STACK_SIZE			//任务堆栈大小
 #define TASK_INIT_STACK_SIZE configMINIMAL_STACK_SIZE			//任务堆栈大小
+#define TASK_COMM_STACK_SIZE configMINIMAL_STACK_SIZE			//任务堆栈大小
 enum
 {
 	TASK_LED_PRI = 1,
 	TASK_LCD_PRI,
+	TASK_COMM_PRI,
 	TASK_INIT_PRI
 };
 /* Private function prototypes -----------------------------------------------*/
@@ -20,6 +22,7 @@ static void SystemClock_Config(void);
 static void CPU_CACHE_Enable(void);
 void Task_LED(void *p);
 void Task_LCD(void *p);
+void Task_COMM(void *p);
 void Task_INIT(void *p);
 /**
   * @brief  Main program
@@ -53,7 +56,15 @@ void Task_INIT(void *p)
 {
 	xTaskCreate(Task_LCD, "LCD", TASK_LCD_STACK_SIZE, (void*)0, TASK_LCD_PRI, NULL);
 	xTaskCreate(Task_LED, "LED", TASK_LED_STACK_SIZE, (void*)0, TASK_LED_PRI, NULL);
+	xTaskCreate(Task_COMM, "COMM", TASK_COMM_STACK_SIZE, (void*)0, TASK_COMM_PRI, NULL);
 	vTaskDelete(NULL);
+}
+void Task_COMM(void *p)
+{
+	for(;;)
+	{
+		vTaskDelay(1000);
+	}
 }
 void Task_LCD(void *p)
 {
